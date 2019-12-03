@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Car;
+use App\Http\Requests\CarRequest;
 use Illuminate\Http\Request;
 
 class CarsController extends Controller
@@ -12,8 +13,16 @@ class CarsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index(Request $request)
+    {   
+        $skip = $request->query('skip');
+        $take = $request->query('take');
+
+        if($take&&$skip){
+
+            return Car::take($take)->skip($skip)->get();
+
+        }
         return Car::all();
     }
 
@@ -33,7 +42,7 @@ class CarsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CarRequest $request)
     {
         return Car::create($request->all());
     }
@@ -67,10 +76,10 @@ class CarsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CarRequest $request, $id)
     {
         $car = Car::find($id);
-        $car->update($reques->all());
+        $car->update($request->all());
 
         return $car;
     }
